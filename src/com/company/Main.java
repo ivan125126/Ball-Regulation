@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -19,15 +20,17 @@ public class Main extends JFrame {
     static int height=800;
 
     //    Calendar calendar = Calendar.getInstance();
-    RandomAccessFile d = new RandomAccessFile("storage.txt","rw");
+    File f = new File("storage.txt");
+    RandomAccessFile d;
 
     Stack<String> previous = new Stack<>();
     Stack<String> next = new Stack<>();
 
-    School school;
+    School school = new School();
     CardLayout card = new CardLayout();
     String current;
 
+    //位置样板
     JPanel pnlMenu = new JPanel();
     JPanel pnlNorth = new JPanel();
     JPanel pnlNW = new JPanel();
@@ -36,34 +39,35 @@ public class Main extends JFrame {
     JPanel pnlDate = new JPanel();
     JPanel pnlFunction = new JPanel();
     JPanel pnlCenter = new JPanel();
-    JPanel pnlSenior = new JPanel();
-    JPanel pnlSen31 = new JPanel();
-    JPanel pnlSen21 = new JPanel();
-    JPanel pnlSen22 = new JPanel();
-    JPanel pnlSen11 = new JPanel();
-    JPanel pnlSen12 = new JPanel();
-    JPanel pnlJunior = new JPanel();
-    JPanel pnlJun31 = new JPanel();
-    JPanel pnlJun21 = new JPanel();
-    JPanel pnlJun22 = new JPanel();
-    JPanel pnlJun11 = new JPanel();
-    JPanel pnlJun12 = new JPanel();
-    JPanel pnlSetting = new JPanel();
-    JPanel pnlClass = new JPanel();
-    JPanel pnlHistory = new JPanel();
-    JPanel pnlTimeTable = new JPanel();
     JPanel pnlScore = new JPanel();
     JPanel pnlSouth = new JPanel();
     JPanel pnlSouth1 = new JPanel();
     JPanel pnlSouth2 = new JPanel();
+    //    JPanel pnlSen31 = new JPanel();
+    //    JPanel pnlSen21 = new JPanel();
+    //    JPanel pnlSen22 = new JPanel();
+    //    JPanel pnlSen11 = new JPanel();
+    //    JPanel pnlSen12 = new JPanel();
+    //    JPanel pnlJun31 = new JPanel();
+    //    JPanel pnlJun21 = new JPanel();
+    //    JPanel pnlJun22 = new JPanel();
+    //    JPanel pnlJun11 = new JPanel();
+    //    JPanel pnlJun12 = new JPanel();
+    //内容样板
+    JPanel pnlInti = new JPanel();//初始设定（第一次使用）
+    JPanel pnlSenior = new JPanel();
+    JPanel pnlJunior = new JPanel();
+    JPanel pnlSetting = new JPanel();
+    JPanel pnlClass = new JPanel();
+    JPanel pnlHistory = new JPanel();
+    JPanel pnlTimeTable = new JPanel();
 
+    //
     JLabel lblTitle = new JLabel();
     JLabel lblSearch = new JLabel("查看: ");
     JLabel lblTime = new JLabel();
     JLabel lblSenior = new JLabel("高中");
     JLabel lblJunior = new JLabel("國中");
-
-    JLabel lblNotDone = new JLabel("此頁面尚未完成！ 請見諒");
 
     JButton btnHome = new JButton("主頁面");
     JButton btnHistory = new JButton("歷史紀錄");
@@ -111,19 +115,13 @@ public class Main extends JFrame {
 
 
     Main() throws FileNotFoundException {
-        //建立系统
-        try {
-            init();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         School school = new School();
 
         //视窗
         this.setSize(width,height);
         this.setLocation(x,y);
-        this.setTitle("學務處借球登记　超ＯＰ Fy 兩本書&一只羊");
+        this.setTitle("學務處借球登记　超OP Fy(By) 兩本書&一只羊");
         BorderLayout thisLayout = new BorderLayout(50,60);
         this.setLayout(thisLayout);
 
@@ -188,11 +186,8 @@ public class Main extends JFrame {
 //        pnlJunior.add(pnlJun11);
 //        pnlJunior.add(pnlJun12);
 
-        lblNotDone.setBackground(Color.RED);
-        lblNotDone.setFont(new Font("新细明體",Font.BOLD,100));
-
         pnlCenter.add(pnlSetting,"setting");
-        pnlSetting.add(new LabelNotDone());
+        //pnlSetting.add(new LabelNotDone());
 
         pnlCenter.add(pnlClass,"class");
         pnlClass.add(new LabelNotDone());
@@ -205,6 +200,9 @@ public class Main extends JFrame {
 
         pnlCenter.add(pnlTimeTable,"timeTable");
         pnlTimeTable.add(new LabelNotDone());
+
+        pnlCenter.add(pnlInti,"Init");
+        pnlInti.add(new LabelNotDone());
 
 //        pnlCenter.add(lblNotDone,"repaired");
 
@@ -284,6 +282,26 @@ public class Main extends JFrame {
             p6.add(ball[1][i][1]);
         }
 
+        //設定
+        pnlSetting.setLayout(new GridLayout(1,5));
+        JLabel settext=new JLabel("變更");
+        JLabel setting=new JLabel("更改班級數為:");
+        String[] schoolList={"高中","國中"};
+        String[] gradeList={"一年級","二年級","三年級"};
+        String[] numlList={"1","2","3","4"};
+        JList setlist1=new JList(schoolList);
+        JList setlist2=new JList(gradeList);
+        JList setlist3=new JList(numlList);
+        pnlSetting.add(settext);
+        pnlSetting.add(setlist1);
+        pnlSetting.add(setlist2);
+        pnlSetting.add(setting);
+        pnlSetting.add(setlist3);
+
+
+
+
+
 
         //下半
         pnlMenu.add(pnlSouth,BorderLayout.SOUTH);
@@ -317,6 +335,13 @@ public class Main extends JFrame {
         card.show(pnlCenter,current);
         lblTitle.setText(getText(current));
         resetButton();
+
+        //建立系统
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -332,26 +357,33 @@ public class Main extends JFrame {
     int cNum;
 
     public void init() throws IOException {
-        bNum=d.readInt();
-        for(int i=0;i<bNum;i++){
-            byte[] bt=new byte[20];
-            d.readFully(bt);
-            int[] arr=new int[4];
-            for(int j=0;j<4;j++)
-                arr[j]=d.readInt();
-            school.addBall(new Ball(new String(bt),arr[0],arr[1],arr[2],arr[3]));
-        }
-        cNum=d.readInt();
-        for(int i=0;i<cNum;i++){
-            byte[] bt=new byte[6];
-            d.readFully(bt);
-            int[] arr=new int[4];
-            for(int j=0;j<4;j++)
-                arr[j]=d.readInt();
-            school.addBall(new Ball(new String(bt), arr[0], arr[1], arr[2], arr[3]));
-        }
 
-//        School school = new School();
+//        if (f.exists()){ //若不是第一次使用
+            d = new RandomAccessFile(f,"rw");
+            bNum=d.readInt();
+            for(int i=0;i<bNum;i++){
+                byte[] bt=new byte[20];
+                d.readFully(bt);
+                int[] arr=new int[4];
+                for(int j=0;j<4;j++)
+                    arr[j]=d.readInt();
+                school.addBall(new Ball(new String(bt),arr[0],arr[1],arr[2],arr[3]));
+            }
+            cNum=d.readInt();
+            for(int i=0;i<cNum;i++){
+                byte[] bt=new byte[6];
+                d.readFully(bt);
+                int[] arr=new int[2];
+                for(int j=0;j<3;j++)
+                    arr[j]=d.readInt();
+                boolean b = d.readBoolean();
+                school.addClass(new Class(new String(bt), arr[0], arr[1], b));
+            }
+//        } else {//若是第一次使用
+//
+//            card.show(pnlCenter,"Init");
+//            lblTitle.setText("初始设定");
+//        }
 
     }
 
@@ -359,8 +391,8 @@ public class Main extends JFrame {
     public void resetButton () {
         btnNext.setEnabled(!next.empty());
         btnBack.setEnabled(!previous.empty());
-        btnOK.setEnabled(current=="weekend");
-//        showStack();
+        btnOK.setEnabled(current=="weekend"||current=="setting");
+//        showStack();//用以检视堆叠错误
     }
 
     String getText(String str) {
@@ -392,7 +424,12 @@ public class Main extends JFrame {
             if (btnHome==e.getSource()) {
                 click("weekend");
             } else if(e.getSource()==btnOK){
-                click("weekendResult");
+                if (current=="weekend")
+                    click("weekendResult");
+                else{
+
+                }
+
             } else if(e.getSource()==btnBack){
                 next.push(current);
                 current = previous.pop();
@@ -434,7 +471,6 @@ public class Main extends JFrame {
         LabelNotDone( ){
             this.setBackground(Color.RED);
             this.setFont(new Font("新细明體",Font.BOLD,100));
-
             this.setText(" 此頁面尚未完成！ 請見諒");
 
         }
