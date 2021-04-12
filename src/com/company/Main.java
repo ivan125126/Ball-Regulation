@@ -189,7 +189,7 @@ public class Main extends JFrame {
 //        pnlJunior.add(pnlJun12);
 
         lblNotDone.setBackground(Color.RED);
-        lblNotDone.setFont(new Font("新细明體",Font.BOLD,100));
+        lblNotDone.setFont(new Font("微軟正黑體",Font.BOLD,100));
 
         pnlCenter.add(pnlSetting,"setting");
         pnlSetting.add(new LabelNotDone());
@@ -433,7 +433,7 @@ public class Main extends JFrame {
     class LabelNotDone extends JLabel{
         LabelNotDone( ){
             this.setBackground(Color.RED);
-            this.setFont(new Font("新细明體",Font.BOLD,100));
+            this.setFont(new Font("微軟正黑體",Font.BOLD,100));
 
             this.setText(" 此頁面尚未完成！ 請見諒");
 
